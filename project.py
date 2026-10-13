@@ -5,12 +5,7 @@ def main():
     
     option  = None
     while True:
-        print("Welcome to Task Driver\n")
-        print("1. check task list")
-        print("2. create work order")
-        print("3. check all request status")
-        print("4. delete a request")
-        print("5.exit")
+        displayInstructions()
         while True:
             option = int(input("choose ur request from 1 to 5: "))
             if option in [1,2,3,4,5]:
@@ -40,6 +35,15 @@ def main():
         if option == 5:
             sys.exit()
         
+
+def displayInstructions():
+    print("Welcome to Task Driver\n")
+    print("1. check task list")
+    print("2. create work order")
+    print("3. check all request status")
+    print("4. delete a request")
+    print("5.exit")
+
 
 if __name__ == "__main__":
     main()
