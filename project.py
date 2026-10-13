@@ -8,7 +8,7 @@ def main():
         displayInstructions()
         while True:
             option = getResponse()
-            if option in [1,2,3,4,5]:
+            if option in [1,2,3,4,5,6]:
                 break
             else:
                 print("Incorrect Input")
@@ -35,10 +35,10 @@ def main():
             if len(tasklist) == 0:
                 break
             num = int(input("choose number to close ?"))
-            if num in range(len(tasklist)):
+            if 1 <= num <= range(len(tasklist)):
                 report = input("what did you do?")
-            if tasklist[num + 1].status == "Open":
-                tasklist[num + 1].status = "Closed"
+            if tasklist[num - 1].status == "Open":
+                tasklist[num - 1].status = "Closed"
                 print(report)
                 print("Request closed")
             else:
@@ -74,7 +74,7 @@ def displaytask(tasklist):
         
 def getResponse():
     try:
-        option = int(input("choose ur request from 1 to 5: "))
+        option = int(input("choose ur request from 1 to 6: "))
         return option
     except ValueError:
         print("Incorrect Input")
