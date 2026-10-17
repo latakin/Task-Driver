@@ -21,7 +21,7 @@ def main():
             displaytask(tasklist)
         if option == 2:
             creator, request, priority = getInput()
-            date = datetime.now()
+            date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             task = Ticket(creator,request,priority)
             tasklist.append({"creator": task.creator, "request": task.request, "priority": task.priority, "date": date, "status": task.status})
             savefile(tasklist, "work_order.csv")
@@ -37,14 +37,13 @@ def main():
                 displaytask(tasklist)  
                 close_request(tasklist)
             else:
-                break
+                print("\nNo work order at the moment")
+                continue
 
         if option == 5:
             displaytask(tasklist)
-            num = int(input("choose number to delete?"))
-            tasklist.pop(num - 1)
-            savefile(tasklist, "work_order.csv")
-            print("\n Request Deleted")
+            delete_request(tasklist)
+            
         if option == 6:
             sys.exit()
         
@@ -99,7 +98,18 @@ def close_request(tasklist):
             savefile(tasklist,"work_order.csv")
             print(report)
             print("Request closed")
-            
+
+
+def delete_request(tasklist):
+    if len(tasklist) > 0 :
+        num = int(input("choose number to delete?"))
+        if num in range(1,len(tasklist)):
+            tasklist.pop(num - 1)
+            savefile(tasklist, "work_order.csv")
+            print("\n Request Deleted")
+        else:
+            print("Incorrect Input")
+
 
 if __name__ == "__main__":
     main()
