@@ -103,7 +103,8 @@ def close_request(tasklist):
 def delete_request(tasklist):
     if len(tasklist) > 0 :
         num = int(input("choose number to delete?"))
-        if num in range(1,len(tasklist)):
+        print(num)
+        if num > 0 and num <= len(tasklist):
             tasklist.pop(num - 1)
             savefile(tasklist, "work_order.csv")
             print("\n Request Deleted")
