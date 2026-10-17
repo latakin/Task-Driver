@@ -1,8 +1,12 @@
 from models import Ticket
 import sys
+from datetime import datetime
+from storage import savefile, getfile
+import csv
+
 def main():
     tasklist = []
-    
+    getfile("work_order.csv", tasklist)
     option  = None
     while True:
         displayInstructions()
@@ -15,39 +19,32 @@ def main():
 
         if option == 1:
             displaytask(tasklist)
-            
         if option == 2:
-            creator = input("who is creating this request? ").lower()
-            request = input("what do you want to report? ").lower()
-            priority = input("how important is it-high/low? ").lower()
+            creator, request, priority = getInput()
+            date = datetime.now()
             task = Ticket(creator,request,priority)
-            tasklist.append(task)
+            tasklist.append({"creator": task.creator, "request": task.request, "priority": task.priority, "date": date, "status": task.status})
+            savefile(tasklist, "work_order.csv")
             print(" ")
             print("Your ticket has been successfully created")
             
         if option == 3:
-            for task in tasklist:
-                print(f"{task.creator} - {task.request} - {task.priority} - {task.status}")
+            checkstatus(tasklist)
         
         if option == 4:
-            print("Here are the available work orders: \n")
-            displaytask(tasklist)
-            if len(tasklist) == 0:
-                break
-            num = int(input("choose number to close ?"))
-            if 1 <= num <= range(len(tasklist)):
-                report = input("what did you do?")
-            if tasklist[num - 1].status == "Open":
-                tasklist[num - 1].status = "Closed"
-                print(report)
-                print("Request closed")
+            if len(tasklist) > 0:
+                print("Here are the available work orders: \n")
+                displaytask(tasklist)  
+                close_request(tasklist)
             else:
-                print("work order is already closed")
+                break
 
         if option == 5:
             displaytask(tasklist)
             num = int(input("choose number to delete?"))
             tasklist.pop(num - 1)
+            savefile(tasklist, "work_order.csv")
+            print("\n Request Deleted")
         if option == 6:
             sys.exit()
         
@@ -63,10 +60,17 @@ def displayInstructions():
     print("6.exit\n")
     print(" ")
 
+def getInput():
+    creator = input("who is creating this request? ").lower()
+    request = input("what do you want to report? ").lower()
+    priority = input("how important is it-high/low? ").lower()
+    return creator, request, priority
+
 def displaytask(tasklist):
+    print("\nHERE ARE THE CURRENT TASK IN TASK DRIVER")
     if len(tasklist) > 0:
         for i,task in enumerate(tasklist, start=1):
-            print(f"{i} {task}")
+            print(f"{i} {task["creator"]} posted {task["request"]} with {task["priority"]} priority on {task["date"]}, and the status is {task["status"]}")
 
     else:
         print("No work order at the moment\n")
@@ -79,6 +83,23 @@ def getResponse():
     except ValueError:
         print("Incorrect Input")
 
+def checkstatus(tasklist):
+    for task in tasklist:
+        print(f"{task["request"]} is {task["status"]}")
+
+def close_request(tasklist):
+    num = int(input("choose number to close ?"))
+    if 1 <= num <= len(tasklist):
+        if tasklist[num - 1]["status"] == "Closed":
+            print("work order is already closed")
+            
+        else:
+            report = input("what did you do?")
+            tasklist[num - 1]["status"] = "Closed"
+            savefile(tasklist,"work_order.csv")
+            print(report)
+            print("Request closed")
+            
 
 if __name__ == "__main__":
     main()
