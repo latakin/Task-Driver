@@ -1,5 +1,4 @@
-from project import getResponse, getInput
-import pytest
+from project import getResponse, getInput, checkstatus
 
 def test_response(monkeypatch):
     monkeypatch.setattr("builtins.input", lambda _: "3")
@@ -19,3 +18,14 @@ def test_get_input(monkeypatch):
     assert creator == "lateef"
     assert request == "broken tap"
     assert priority == "high"
+
+
+
+def test_checkstatus(capsys):
+    tasklist =[{"request": "broken tap", "status": "Open"}]
+    checkstatus(tasklist)
+    
+    captured = capsys.readouterr()
+    
+    
+    assert "broken tap is Open" in captured.out
